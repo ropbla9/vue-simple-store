@@ -1,0 +1,10 @@
+{
+  "name": "vue-simple-store",
+  "description": "fork by rop from BosNaufal/vue-simple-store",
+  "version": "1.0.0",
+  "author": "Rodolfo Paranhos <ropbla9@gmail.com>",
+  "main": "vue-simple-store.min.js",
+  "peerDependencies": {
+    "vue": "^2.1.0"
+  },
+}
