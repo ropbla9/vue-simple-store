@@ -3,15 +3,15 @@
 *
 * Vue Simple Store - version@1.0.0
 *
+* Adpted for Vue 2ˆ by ropSoft
+*  
 */
 
 (function () {
 
   var VueSimpleStore = {
 
-    install: function(Vue, opt){
-
-      var plugin = this;
+    install: function(Vue, opt) {
 
       if(opt.debug) console.info('[Vue Simple Store]: In Debug Mode');
 
@@ -32,31 +32,33 @@
         delete theStores[opt.stores[i].name].name;
       }
 
-      plugin.mixin = {};
+      Vue.mixin({
+          
+          created() {
+              
+              Vue.util.defineReactive(this,'state',theState);
+              Vue.util.defineReactive(this,'$action', function(eventName,val){
 
-      plugin.mixin.init = function(){
-        Vue.util.defineReactive(this,'state',theState);
-        Vue.util.defineReactive(this,'$action', function(eventName,val){
+                var theColon = eventName.search(':');
+                var storeName = eventName.substr(0,theColon);
+                var theEvent = eventName.substr(theColon+1,eventName.length)
 
-          var theColon = eventName.search(':');
-          var storeName = eventName.substr(0,theColon);
-          var theEvent = eventName.substr(theColon+1,eventName.length)
+                if(theStores[storeName] === undefined) return console.warn("[Vue Simple Store]: the "+storeName+" store doesn't exist");
 
-          if(theStores[storeName] === undefined) return console.warn("[Vue Simple Store]: the "+storeName+" store doesn't exist");
+                // Trigger the store
+                theStores[storeName][theEvent](val);
 
-          // Trigger the store
-          theStores[storeName][theEvent](val);
+                if(opt.debug){
+                  if(val === undefined) console.info(eventName);
+                  else console.info(eventName,val);
+                }
 
-          if(opt.debug){
-            if(val === undefined) console.info(eventName);
-            else console.info(eventName,val);
+              });
           }
-
-        });
-      };
+      });
 
       // Merge mixin to VM via vue options
-      Vue.options = Vue.util.mergeOptions(Vue.options, plugin.mixin)
+      Vue.options = Vue.util.mergeOptions(Vue.options, Vue.mixin)
     }
 
   };
