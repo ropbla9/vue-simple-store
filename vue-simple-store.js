@@ -4,7 +4,7 @@
 * Vue Simple Store - version@1.0.0
 *
 * Adpted for Vue 2ˆ by ropSoft
-*  
+*
 */
 
 (function () {
@@ -33,11 +33,11 @@
       }
 
       Vue.mixin({
-          
+
           created() {
-              
-              Vue.util.defineReactive(this,'state',theState);
-              Vue.util.defineReactive(this,'$action', function(eventName,val){
+
+              Vue.util.defineReactive(this,'state', theState);
+              Vue.util.defineReactive(this,'$action', function(eventName, val, callback) {
 
                 var theColon = eventName.search(':');
                 var storeName = eventName.substr(0,theColon);
@@ -50,8 +50,10 @@
 
                 if(opt.debug){
                   if(val === undefined) console.info(eventName);
-                  else console.info(eventName,val);
+                  else console.info(eventName, val);
                 }
+
+                if(callback && typeof callback === "function") callback(val);
 
               });
           }
